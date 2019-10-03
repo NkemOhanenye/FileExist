@@ -16,11 +16,9 @@ public class Finder {
 
     // The ReadAndWrite Functions
     private String fileN = "yuubu";
-    private String fileNc;
     private String write = "";
     private String dir = "src/Resources/";
     private String pt = ".txt";
-
     private File file = new File(dir + fileN + pt);
 
     //The buttons in the JOptionPane
@@ -42,10 +40,13 @@ public class Finder {
         oW.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                // works, need to add write function
                 try {
-                    //file.delete();
+                    file = new File(dir + fileN + pt);
+                    file.delete();
+                    file.createNewFile();
                 } catch (Exception e) {
-
+                    System.out.println("The file no long exists.");
                 }
                 fileFoundDialog.dispose();
                 System.exit(0);
@@ -54,7 +55,31 @@ public class Finder {
         aO.addActionListener(new ActionListener()  {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                if (!file.exists()) {
+                // need to write way to check if file exists for new file
+                if (file.exists()) {
+                    //needs better code, but works, add in write function
+                    int k = Integer.parseInt(fileN.replaceAll("[\\D]", ""));
+                    int i = Integer.parseInt(fileN.split("[\\(\\)]")[1]);
+                    i = i + 0; //to not get a NumberFormatException if the filename is empty
+                    if (i >= 1){
+                        fileN = fileN.replaceAll("\\(.*\\)", "");
+                        fileN = fileN + "(" + (i+1) + ")";
+                        try {
+                            file = new File(dir + fileN + pt);
+                            if (!file.exists()) file.createNewFile();
+                        } catch (Exception e){
+                            System.out.println("The file could not be created");
+                        }
+                    } else{
+                        fileN = fileN + "(" + (k+1) + ")";
+                        try {
+                            file = new File(dir + fileN + pt); //needs to be recalled to create the file
+                            if (!file.exists()) file.createNewFile();
+                        } catch (Exception e) {
+                            System.out.println("The file could not be created");
+                        }
+                    }
+                } else {
                     fileFoundDialog.dispose();
                     JOptionPane pane = new JOptionPane(
                             JOptionPane.showConfirmDialog(
@@ -74,19 +99,6 @@ public class Finder {
                     });
                     fileFoundDialog.setLocationRelativeTo(fileFoundFrame);
                     fileFoundDialog.setVisible(true);
-                } else {
-                    int i = Integer.parseInt(fileN.replaceAll("[\\D]", "") + 0);
-                    if (i >= 1){
-                        //fileN = fileN + "(" + i++ + ")";
-                    } else{
-                        fileN = fileN + "(" + (i+1) + ")";
-                        try {
-                            System.out.println(fileN);
-                            if (!file.exists()) file.createNewFile();
-                        } catch (Exception e) {
-
-                        }
-                    }
                 }
                 fileFoundDialog.dispose();
                 System.exit(0);
